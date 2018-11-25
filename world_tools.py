@@ -11,7 +11,7 @@ class WorldTools:
         self.bot = bot
     
     @commands.command(name='magicmarket')
-    async def magicmarket(self, ctx, marketClass:int, months:int):
+    async def magicmarket(self, ctx, marketClass:int, months:int=1):
         '''DMs you a long list of available magic items.'''
         magicMarketOutput = magicavail.genMarketAvailability(marketClass, months)
         for magicMarketMessage in util.chunks(magicMarketOutput, 2000):
@@ -67,8 +67,10 @@ class WorldTools:
         util.logger.error(error)
 
     @commands.command(name='party')
-    async def party(self, ctx, num:int, minLevel:int, maxLevel:int):
+    async def party(self, ctx, num:int, minLevel:int, maxLevel:int=0):
         '''Generate stats for a party.'''
+        if maxLevel == 0:
+            maxLevel = minLevel
         if minLevel < 0 or maxLevel > 14:
             await ctx.author.send("The party got lost. Make sure you send a valid min and max level.")
         else:

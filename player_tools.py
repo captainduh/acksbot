@@ -11,7 +11,7 @@ class PlayerTools:
         self.bot = bot
 
     @commands.command(name='mercs', aliases=["hirelings"])
-    async def mercs(self, ctx, marketClass:int, months:int):
+    async def mercs(self, ctx, marketClass:int, months:int=1):
         '''DMs you a list of hirelings.'''
         hirelingMessage = hirelingGenerator.genHirelings("hireprices", marketClass, months)
         await ctx.author.send(content=hirelingMessage)
