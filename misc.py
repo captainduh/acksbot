@@ -7,13 +7,8 @@ random.seed()
 class Misc:
     def __init__(self, bot):
         self.bot = bot
-        
-    @commands.command()
-    async def roll(self, ctx, *, roll_cmd:str):
-        '''
-        Type !roll xdy+z to roll x y sided dice and add z.
-        You can also drop the lowest with xdydz.
-        '''
+    
+    def get_roll_message(self, ctx, roll_cmd:str, sorted_output:bool):
         command_array = roll_cmd.split('+')
         bonus = 0
         if len(command_array) > 1:
@@ -36,14 +31,33 @@ class Misc:
             die_roll = random.randint(1, sides)
             rolled.append(die_roll)
         
+        rolled_output = rolled if sorted_output else list(rolled)
         rolled.sort()
         rolled.reverse()
         total = sum(rolled[0:len(rolled)-drop])
         total = total + bonus
-        message = ctx.author.display_name + " rolled " + str(rolled) + ((" + " + str(bonus)) if bonus > 0 else "")
+        message = ctx.author.display_name + " rolled " + str(rolled_output) + ((" + " + str(bonus)) if bonus > 0 else "")
         message += ((" and dropped the lowest " + str(drop)) if drop > 0 else " ")
         message += "\nTotal: " + str(total)
+        return message
         
+    @commands.command(name='unsortedroll', aliases=["rollunsorted"])
+    async def unsorted_roll_cmd(self, ctx, *, roll_cmd:str):
+        '''
+        Type !roll xdy+z to roll x y sided dice and add z.
+        You can also drop the lowest with xdydz.
+        '''
+        message = self.get_roll_message(ctx, roll_cmd, False)
+        await ctx.send(message)
+        util.logger.info(ctx.author.name + ": " + ctx.message.content)
+                
+    @commands.command(name='roll')
+    async def roll(self, ctx, *, roll_cmd:str):
+        '''
+        Type !roll xdy+z to roll x y sided dice and add z.
+        You can also drop the lowest with xdydz.
+        '''
+        message = self.get_roll_message(ctx, roll_cmd, True)
         await ctx.send(message)
         util.logger.info(ctx.author.name + ": " + ctx.message.content)
 
@@ -60,6 +74,11 @@ class Misc:
         \ncalamity calculator, npc generator, and mule calculator by jedavis.  https://github.com/jedavis-rpg/ackstools \
         \nHenchman generator by golan2027. https://github.com/Golan2072/RPG")
         util.logger.info(ctx.author.name + ": " + ctx.message.content)
+        
+    #@commands.command()
+    #async def friendcode(self, ctx, code:str):
+    #    '''Add your friendcode to the server's database.'''
+        
         
 def setup(bot):
     bot.add_cog(Misc(bot))
