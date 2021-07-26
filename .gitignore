@@ -1,0 +1,7 @@
+server_key
+*.pyc
+__pycache__/
+discord.log
+cogs/__pycache__/
+db_utils.py
+.swp
