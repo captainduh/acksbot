@@ -6,33 +6,13 @@ import datetime
 from discord.ext import tasks, commands
 
 random.seed()
-PVP_CHANNEL = 467354528807649290
 
 class Misc(commands.Cog):
-    pvp_channel = None
     def __init__(self, bot):
         self.bot = bot
-        pvp_channel = bot.get_channel(PVP_CHANNEL)
-        #self.clean_pvp_channel.start()
-        
-    def cog_unload():
-        self.clean_pvp_channel.cancel()
         
     def message_is_not_pinned(m):
         return not m.pinned
-        
-    @tasks.loop(seconds=600.0)
-    async def clean_pvp_channel(self):
-        two_weeks_ago = datetime.datetime.today() - datetime.timedelta(days=14)
-        pvp_channel = self.bot.get_channel(PVP_CHANNEL)
-        print(dir(pvp_channel))
-        deleted = await pvp_channel.purge(limit=10000, oldest_first=True, before=two_weeks_ago, check=self.message_is_not_pinned)
-        print(len(deleted))
-    
-    @clean_pvp_channel.before_loop
-    async def before_clean_pvp(self):
-        print('Waiting for server start')
-        await self.bot.wait_until_ready()
 
     def get_roll_message(self, ctx, roll_cmd:str, sorted_output:bool):
         command_and_description = roll_cmd.split(' ', maxsplit=1)
@@ -139,11 +119,6 @@ class Misc(commands.Cog):
         \ncalamity calculator, and npc generator by jedavis.  https://github.com/jedavis-rpg/ackstools \
         \nHenchman generator by golan2027. https://github.com/Golan2072/RPG")
         util.logger.info(ctx.author.name + ": " + ctx.message.content)
-        
-    #@commands.command()
-    #async def friendcode(self, ctx, code:str):
-    #    '''Add your friendcode to the server's database.'''
-        
         
 def setup(bot):
     bot.add_cog(Misc(bot))
