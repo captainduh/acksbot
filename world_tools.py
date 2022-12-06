@@ -6,7 +6,7 @@ import hex2 as lairGen
 
 from discord.ext import commands
 
-class WorldTools:
+class WorldTools(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -67,14 +67,14 @@ class WorldTools:
         util.logger.error(error)
 
     @commands.command(name='party')
-    async def party(self, ctx, num:int, minLevel:int, maxLevel:int=0):
+    async def party(self, ctx, num:int, minLevel:int, maxLevel:int=0, className:str=""):
         '''Generate stats for a party.'''
         if maxLevel == 0:
             maxLevel = minLevel
         if minLevel < 0 or maxLevel > 14:
             await ctx.author.send("The party got lost. Make sure you send a valid min and max level.")
         else:
-            await ctx.author.send(hg.genParty(num, minLevel, maxLevel))
+            await ctx.author.send(hg.genParty(num, minLevel, maxLevel, className))
         util.logger.info(ctx.author.name + ": " + ctx.message.content)
 
     @party.error

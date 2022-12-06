@@ -6,7 +6,7 @@ import muleteer
 
 from discord.ext import commands
 
-class PlayerTools:
+class PlayerTools(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
